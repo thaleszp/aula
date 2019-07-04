@@ -1,16 +1,16 @@
 # RAIS 1985 do RS = 2.370.043 obs (txt com 400 mega)
-#excel tem limite de 1 milh„o de linhas. 
+#excel tem limite de 1 milh√£o de linhas. 
 
-################## CÛdigo que usei para montar o arquivo RaisSM1995
+################## C√≥digo que usei para montar o arquivo RaisSM1995
 
 
 library(tidyverse)
-RaisSM1995 <- RS1995 %>% filter (`MunicÌpio` == 431690)
+RaisSM1995 <- RS1995 %>% filter (`Munic√≠pio` == 431690)
   
 write.csv(RaisSM1995,'RaisSM1995.csv')
 
 
-#clean_names ---> pacote janitor para simplificar o nome das vari·veis (e tira acentos)
+#clean_names ---> pacote janitor para simplificar o nome das vari√°veis (e tira acentos)
 library(janitor)  
 RaisSM1995 %>% clean_names()
 
@@ -20,29 +20,29 @@ RaisSM1995 %>% clean_names()
 ## Excel ----> R  
   
 # Pipes: 
-#Escrito como %>% , permite encadear uma sÈrie de funÁıes em uma base de dados.
+#Escrito como %>% , permite encadear uma s√©rie de fun√ß√µes em uma base de dados.
 
 
-################## 6 principais funÁıes do pacote dplyr -> usar library(tidyverse)
+################## 6 principais fun√ß√µes do pacote dplyr -> usar library(tidyverse)
 #VER https://r4ds.had.co.nz/tidy-data.html
 
 
-#SELECT ----> seleciona um conjunto de vari·veis
+#SELECT ----> seleciona um conjunto de vari√°veis
   
 DataFrame %>% 
   select(x)
 
-Dataframe %>% select(-vari·vel1, -vari·vel2) #escolher todas vari·veis menos as especificadas
+Dataframe %>% select(-vari√°vel1, -vari√°vel2) #escolher todas vari√°veis menos as especificadas
 
-DF2 <- RaisSM1995 %>% select(Tamanho.Estabelecimento:Tipo.VÌnculo)
+DF2 <- RaisSM1995 %>% select(Tamanho.Estabelecimento:Tipo.V√≠nculo)
 
 
 
 
 #########################################################################################
 
-#MUTATE ----> cria / transforma uma vari·vel 
-# ifelse cria condiÁıes lÛgicas no R
+#MUTATE ----> cria / transforma uma vari√°vel 
+# ifelse cria condi√ß√µes l√≥gicas no R
 
 DF %>%
   mutate(nome = X * 100) 
@@ -53,10 +53,10 @@ RaisSM1995 <- RaisSM1995 %>%
                                          ifelse(Idade %in% 25:50, "adulto",
                                                 ifelse(Idade > 50, "senior", "no"))))) #sempre tem que terminar com o "else" = "no"
 
-#operador %in% È utilizado para idenficar um elemento em um vetor
-# ser· que existe o CBO 99920 na base?
+#operador %in% √© utilizado para idenficar um elemento em um vetor
+# ser√° que existe o CBO 99920 na base?
 
-99920 %in% RaisSM1995$CBO.94.OcupaÁ„o
+99920 %in% RaisSM1995$CBO.94.Ocupa√ß√£o
 
 
 # grepl (base R) permite usar vetores com caracteres no mutate
@@ -64,46 +64,46 @@ RaisSM1995 <- RaisSM1995 %>%
 teste <- grepl("adulto", RaisSM1995$faixa_etaria)
 sum(teste, na.rm = TRUE)
 
-#compare com o resultado acima. Qual a diferenÁa entre os dois cÛdigos?
+#compare com o resultado acima. Qual a diferen√ßa entre os dois c√≥digos?
 RaisSM1995 %>% filter(faixa_etaria %in% c("adulto")) %>%
   count(faixa_etaria)
 
-RaisSM1995 <- mutate(RaisSM1995, classificando = ifelse(grepl("adul", faixa_etaria), "Tudo Adulto", "pi·"))
+RaisSM1995 <- mutate(RaisSM1995, classificando = ifelse(grepl("adul", faixa_etaria), "Tudo Adulto", "pi√°"))
 
 
                                       
 #########################################################################################
 
-#FILTER ----> filtra informaÁıes baseado em uma ou mais condiÁıes
+#FILTER ----> filtra informa√ß√µes baseado em uma ou mais condi√ß√µes
 
 DF %>% 
   filter(x > 100) 
 
 remuneracao_homens <- RaisSM1995 %>% 
                       filter(Sexo.Trabalhador == 1) %>% 
-                      filter(Vl.Remun.MÈdia..SM. >= 10) ##seleciona homens que ganham 10 SM ou mais.
+                      filter(Vl.Remun.M√©dia..SM. >= 10) ##seleciona homens que ganham 10 SM ou mais.
 
 RaisIdades <- RaisSM1995 %>%
-          filter(Idade %in% 20:30) #selecionar idades de 20 atÈ 30. c("BB", "AA") para caracteres
+          filter(Idade %in% 20:30) #selecionar idades de 20 at√© 30. c("BB", "AA") para caracteres
 
 
 #########################################################################################
 
-#SUMMARIZE ----> resume uma informaÁ„o 
+#SUMMARIZE ----> resume uma informa√ß√£o 
 
 DF %>% 
   summarize(nome = mean(x, na.rm = TRUE)) #na.rm retira os NA da base
 
 RaisSM1995 %>%
   filter(Sexo.Trabalhador == 2) %>% 
-  summarize(salariomulher = mean(Vl.Remun.MÈdia..SM., na.rm = TRUE)) #qual a remuneracao media das mulheres 
-                                                                     #(em sal·rios mÌnmos)
+  summarize(salariomulher = mean(Vl.Remun.M√©dia..SM., na.rm = TRUE)) #qual a remuneracao media das mulheres 
+                                                                     #(em sal√°rios m√≠nmos)
 
 
 
 #########################################################################################
 
-#GROUP_BY ----> junta informaÁıes (semelhante ao Pivot Table no Excel)
+#GROUP_BY ----> junta informa√ß√µes (semelhante ao Pivot Table no Excel)
 
 DF %>% 
   group_by(x) %>% 
@@ -111,12 +111,12 @@ DF %>%
 
 RaisSM1995 %>%
   group_by(Sexo.Trabalhador) %>% 
-  summarize(salarios = mean(Vl.Remun.MÈdia..SM., na.rm = TRUE)) #comparar rendas por categorias
+  summarize(salarios = mean(Vl.Remun.M√©dia..SM., na.rm = TRUE)) #comparar rendas por categorias
 
 
 #########################################################################################
 
-#ARRANGE ----> ordena as informaÁıes
+#ARRANGE ----> ordena as informa√ß√µes
 
 DF %>% 
   arrange(X) %>% 
@@ -125,44 +125,29 @@ DF %>%
 
 #########################################################################################
 
-###USAR DATAS
-
-#SEPARATE ----> 1900/07 EM DUAS COLUNAS: 1900 E 07
-
-DF %>% 
-separate(variavel_original, into = c("nova_var 1", "nova_var 2"), sep = "/", convert = TRUE)
-#convert = true È para converter autom·tico chr em number.
-
-
-
-# UNITE ----> INVERSO DE SEPARATE
-
-unite(new, VAR1, VAR2, sep = "") #sep È para estabelecer o separador
-
-
-
 library(ggplot2)
 theme_set(theme_classic())
 
 
 #  Plot Densidade
-g <- ggplot(RaisSM1995, aes(`Vl.Remun.MÈdia..SM.`))
+g <- ggplot(RaisSM1995, aes(`Vl.Remun.M√©dia..SM.`))
 g + geom_density(aes(fill=factor(Sexo.Trabalhador)), alpha=0.8) + 
-  labs(title="DistribuiÁ„o de sal·rios em 1995", 
-       subtitle="preÁos nominais",
+  labs(title="Distribui√ß√£o de sal√°rios em 1995", 
+       subtitle="pre√ßos nominais",
        caption="Fonte: Rais",
-       x="faixa de sal·rios",
-       fill="GÍnero") + scale_x_continuous(limits = c(0, 10))
+       x="faixa de sal√°rios",
+       fill="G√™nero") + scale_x_continuous(limits = c(0, 10))
 
 
+#########################################################################################
 
 #LUBRIDATE ----> ORGANIZAR DATAS 
-#COMO TEMOS 1 VARI¡VEL COM M S, PRECISAMOS CONSTRUIR COLUNAS COM ANO E DIA. 
-#lembrando que RAIS tem "mÍs.admiss„o" = 0, ou seja, a pessoa j· est· no emprego.
-#vamos usar valor da remuneraÁ„o mÈdia (que est· em sal·rios mÌnimos). 
-#vamos criar uma data mÈdia (junho de 1995) para ajustar o valor dos sal·rios. 
+#COMO TEMOS 1 VARI√ÅVEL COM M√äS, PRECISAMOS CONSTRUIR COLUNAS COM ANO E DIA. 
+#lembrando que RAIS tem "m√™s.admiss√£o" = 0, ou seja, a pessoa j√° est√° no emprego.
+#vamos usar valor da remunera√ß√£o m√©dia (que est√° em sal√°rios m√≠nimos). 
+#vamos criar uma data m√©dia (junho de 1995) para ajustar o valor dos sal√°rios. 
 
-RaisSM1995 <- RaisSM1995 %>% mutate(remu_media = Vl.Remun.MÈdia..SM. * 100) #100 È o sal·rio minimo em junho de 1995
+RaisSM1995 <- RaisSM1995 %>% mutate(remu_media = Vl.Remun.M√©dia..SM. * 100) #100 √© o sal√°rio minimo em junho de 1995
 
 
 library(lubridate)
@@ -176,16 +161,16 @@ RaisSM1995 <- RaisSM1995 %>%
   mutate(Datas = make_date(year=ano, month=mes, day=dia))
 
 
-library(deflateBR) #deflacionar dados. opÁ„o padr„o È o IPCA
+library(deflateBR) #deflacionar dados. op√ß√£o padr√£o √© o IPCA
 
 RaisSM1995$salario <- deflate(RaisSM1995$remu_media, RaisSM1995$Datas, "01/2019")
 
 
 
-#quanto recebia um professor de ensino mÈdio em 1995?
+#quanto recebia um professor de ensino m√©dio em 1995?
 #CBO 1-41
 
-CBO <- as.character(RaisSM1995$'CBO.94.OcupaÁ„o')
+CBO <- as.character(RaisSM1995$'CBO.94.Ocupa√ß√£o')
 CBO3 <- substr(CBO, 1, 3)
 RaisSM1995$CBO <- as.numeric(CBO3)
 
@@ -202,6 +187,22 @@ RaisSM1995 %>%
   summarise(mean(salario, na.rm = TRUE))
 
 ############################################################################
+
+#SEPARATE ----> 1900/07 EM DUAS COLUNAS: 1900 E 07
+
+DF %>% 
+separate(variavel_original, into = c("nova_var 1", "nova_var 2"), sep = "/", convert = TRUE)
+#convert = true √© para converter autom√°tico chr em number.
+
+
+
+# UNITE ----> INVERSO DE SEPARATE
+
+unite(new, VAR1, VAR2, sep = "") #sep √© para estabelecer o separador
+
+
+
+#########################################################################################
 library(BETS) #pacote da FGV para pegar dados do IPEA, BC, etc.
 
 ##https://cran.r-project.org/web/packages/BETS/vignettes/BETS_basic_usage.html 
