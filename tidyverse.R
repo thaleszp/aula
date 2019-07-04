@@ -201,6 +201,33 @@ separate(variavel_original, into = c("nova_var 1", "nova_var 2"), sep = "/", con
 unite(new, VAR1, VAR2, sep = "") #sep é para estabelecer o separador
 
 
+############################################################################
+#vamos pegar as 10 profissões que mais aparecem no CBO
+
+
+RaisSM1995$CBO <- as.character(RaisSM1995$CBO.94.Ocupação) #porque variável original está como fator
+
+categorias <- RaisSM1995 %>% count(CBO.94.Ocupação)
+
+categorias %>% 
+top_n(10) %>%
+  mutate(CBO.94.Ocupação = reorder(CBO.94.Ocupação, n)) %>%  
+  ggplot(aes(CBO.94.Ocupação, n)) +
+    geom_col(show.legend = FALSE, fill = "#7288B9") +
+    coord_flip() +
+    scale_y_continuous(expand = c(0,0)) +
+    scale_x_discrete(breaks = c("45130", "95932", "39310"),
+    labels = c("Vendedor de comércio varejista","Servente de obras","Auxiliar de escritório")) +
+    labs(y = "Número de empregos",
+       x = NULL,
+       title = "Principais categorias de empregos com carteira assinada em Santa Maria",
+       subtitle = "CBO, fonte Rais") +
+       theme_light()
+    
+
+
+
+
 
 #########################################################################################
 library(BETS) #pacote da FGV para pegar dados do IPEA, BC, etc.
