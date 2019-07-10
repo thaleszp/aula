@@ -225,19 +225,13 @@ top_n(10) %>%
        theme_light()
     
 
+############################################################################
+#Datas para séries de tempo
+startDate <- as.Date("1920-01-01")
+X <- seq(startDate, by="1 year", length.out=71)
+DF$Date <- X
 
 
-
-
-#########################################################################################
-library(BETS) #pacote da FGV para pegar dados do IPEA, BC, etc.
-
-##https://cran.r-project.org/web/packages/BETS/vignettes/BETS_basic_usage.html 
-
-BETSsearch()
-
-
-BETS.chart(ts = 'iie_br', file = "iie_br", open = TRUE)
 
 
 
