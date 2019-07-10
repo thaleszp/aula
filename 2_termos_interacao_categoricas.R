@@ -10,13 +10,13 @@ ggplot(wage1, aes(exper, wage)) +
   geom_point() + 
   geom_smooth() +
   theme_bw() + 
-  labs (title = "", subtitle = "Fonte: Wooldridge, dados 'wage1'", caption = "", x = "experiência", y = "salário") + 
+  labs (title = "", subtitle = "Fonte: Wooldridge, dados 'wage1'", caption = "", x = "experiÃªncia", y = "salÃ¡rio") + 
   theme(text = element_text(size=18))
 
 
 
 
-#relação quadrática entre salário e experiência.
+#relaÃ§Ã£o quadrÃ¡tica entre salÃ¡rio e experiÃªncia.
 
 modelo1 <- lm(wage ~ exper, data=wage1)
 summary(modelo1)
@@ -27,11 +27,11 @@ summary(modelo2)
 
 
 
-#qual o impacto da experiencia no modelo 2? depende do ano.
+#qual o impacto de 1 ano a mais de experiencia no modelo 2? depende do perÃ­odo.
 
-0.298 + (2*-0.0061)*13 #13 anos de experiencia
+0.298 + (2*-0.0061)*13 #13 para 14 anos de experiencia
 
-0.298 + (2*-0.0061)*25 #25 anos o efeito da experiência já é negativo
+0.298 + (2*-0.0061)*25 #25 para 26 anos o efeito da experiÃªncia jÃ¡ Ã© negativo
 
 
 
@@ -111,19 +111,19 @@ mulher <- wage1 %>% filter(female == 1)
 
 
 
-#termos de interação com variáveis categoricas = desloca o intercepto
+#termos de interaÃ§Ã£o com variÃ¡veis categoricas = desloca o intercepto
 
-modelo3 <- lm(wage ~ married*female, data=wage1) #esse comando já adiciona as três variáveis, ver no summary
-summary(modelo3) #interação entre casado e mulher é significativo. 
+modelo3 <- lm(wage ~ married*female, data=wage1) #esse comando jÃ¡ adiciona as trÃªs variÃ¡veis, ver no summary
+summary(modelo3) #interaÃ§Ã£o entre casado e mulher Ã© significativo. 
 
-5.16 + 2.81 + (-2.86) + (-0.55*1) #média salarial = ser mulher e ser casada  
+5.16 + 2.81 + (-2.86) + (-0.55*1) #mÃ©dia salarial = ser mulher e ser casada  
 
-5.16 + 2.81 + (-2.86*0) + (-0.55*0) #média salarial = ser homem e ser casado 
+5.16 + 2.81 + (-2.86*0) + (-0.55*0) #mÃ©dia salarial = ser homem e ser casado 
 
-5.16 + 2.81*0 + (-2.86*0) + (-0.55*1) #média salarial = ser mulher e solteira no salário
+5.16 + 2.81*0 + (-2.86*0) + (-0.55*1) #mÃ©dia salarial = ser mulher e solteira no salÃ¡rio
 
 
--0.55 - 2.86 #mulheres casadas ganham em média 3.4 a menos que o grupo controle (homens casados)
+-0.55 - 2.86 #mulheres casadas ganham em mÃ©dia 3.4 a menos que o grupo controle (homens casados)
 
 
 #fazer a media simples pela base de dados
