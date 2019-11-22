@@ -29,15 +29,15 @@ summary(m1)
 #qual observação o modelo mais superestimou a nota?
 #Qual a nota esperada de quem estudou 5 horas para a prova?
 
-2.0901*(0.7035*5)
+2.0901+(0.7035*5)
 
 m2 <- lm(Nota ~ T_Estudo + Aluno, data=dadosprova)
 summary(m2)
 
 #R escolhe o primeiro nome em ordem alfabetica como referencia.
-# Qual a nota esperada ddo Jose se ele estudou 5 horas?
+# Qual a nota esperada do Jose se ele estudou 5 horas?
 
-(2.57925 - 0.98868)*(5*0.68679)
+(2.57925 - 0.98868)+(5*0.68679)
 
 
 
