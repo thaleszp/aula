@@ -1,7 +1,134 @@
 library(wooldridge)
 options(scipen=999)
 
+#Exercicio C1
+
+data("fertil1")
+?fertil1
+
+eq13.1 <- lm(kids ~ educ + age + agesq + black + east + 
+               northcen + west + farm + othrural +
+               town + smcity + y74 + y76 + y78 + y80 + y82 + y84, data=fertil1)
+
+summary(eq13.1)
+
+#iii - Suponha que voce acredite que que a variacao de u mude só com o tempo
+
+u <- resid(eq13.1)
+fertil1$u2 <- u^2
+ 
+eq13.1b <- lm(u2 ~ y74 + y76 + y78 + y80 + y82 + y84, data=fertil1)
+summary(eq13.1b)
+#evidencia de heterosc.
+
+#___________________________________________________________________________________
+#Exercicio C2
+
+data("cps78_85")
+?cps78_85
+
+#como você interpreta o coeficiente de y85 na eq 13.2?
+
+eq13.2 <- lm(lwage ~ y85 + educ + y85*educ + 
+               exper + expersq + union + female + y85*female, data = cps78_85)
+summary(eq13.2)
+
+#coef de y85 é a mudança proporcional no salário de um homem com zero anos de educ.
+
+#Mantendo outros fatores fixos, qual o aumento percentual estimado do salario 
+#nominal de um homem com 12 anos de escolaridade? Proponha uma reg para obter o iC 
+#para essa estimativa.
+
+#queremos estimar coef de y85 + coef de y85*educ, com educ = 10.
+#mudança no intercepto para um homem com 12 anos de educ. 
+#com y85*(educ - 12), coef e e.p está em y85.
+
+0.11780622 + (0.01846053*12)
+
+#para o erro padrão.
+cps78_85$educb <- cps78_85$educ - 12
+eq13.2b <- lm(lwage ~ y85 + educ + y85*educb + 
+               exper + expersq + union + female + y85*female, data = cps78_85)
+summary(eq13.2b)
+
+ic_inf <- 0.339-1.96*0.034
+ic_sup <- 0.339+1.96*0.034
+
+#faça nova estimativa de 13.2, mas com todos os salarios medidos em dolares de 78
+
+cps78_85$wage <- exp(cps78_85$lwage)
+
+library(dplyr)
+
+y85 <- cps78_85 %>% 
+       filter(y85==1) %>%
+       mutate(rwage = wage/1.65)          
+  
+
+index <- cps78_85$y85 == 1
+cps78_85$rwage[index] <- (cps78_85$wage[index])/1.65 
+
+eq13.2c <- lm(lrwage ~ y85 + educ + y85*educ + 
+                exper + expersq + union + female + y85*female, data = cps78_85)
+summary(eq13.2c)
+
+#___________________________________________________________________________________
+#Exercicio C3
+
+data("kielmc")
+?kielmc
+
+#o que significa se  coef de log(dist) é >0?
+
+c3 <- lm(lprice ~ y81 + ldist + y81*ldist, data=kielmc)
+summary(c3)
+
+#i, se log(dist) é >0, incinerador é mais distante de casas mais caras.
+
+#coef de y81*ldist=0.04 não é significativo (mas tem sinal correto)
+
+c3_3 <- lm(lprice ~ y81 + ldist + y81*ldist +
+             age + agesq + lintstsq + lland + larea , data=kielmc)
+summary(c3_3)
+#que caracteristicas das casas explicam a dif de precos, não a dist do incinerador
+
+#___________________________________________________________________________________
+#Exercicio C5
+data("rental")
+?rental
+c5 <- lm(lrent ~ y90 + lpop + lavginc + pctstu, data=rental)
+summary(c5)
+
+# em termos nominais, alugueis amentaram 26% em 10 anos. 
+# pctstu 1 ponto percentual aumenta o alguel em 0.5%
+
+#ii erros padrao sao validos? ai são efeitos fixos.
+
+#_________________________________________________________
+
+#p.513 1.4
+data("jtrain")
+library(tidyverse)
+jtrain2 <- jtrain %>% filter(year %in% c(1987, 1988)) %>%
+                      select(scrap, year, grant) %>%
+                      na.omit()
+
+Ano1987 <- jtrain2 %>% filter(year=="1987") 
+Ano1988 <- jtrain2 %>% filter(year=="1988") 
+delta_jtrain <- Ano1988 - Ano1987
+
+jtrain_ols <- lm(scrap ~ grant, data=delta_jtrain)
+summary(jtrain_ols)
+
+
+
+##########################################################################
 #AULA PAINEL EFEITOS FIXOS 
+# como fazer o pooling dos dados?
+
+#library(plm)
+#poolmod <- plm(modelo, base de dados, model="pooling")
+
 
 #ler clipboard
 dadosprova <- read.delim("clipboard")
@@ -35,7 +162,7 @@ m2 <- lm(Nota ~ T_Estudo + Aluno, data=dadosprova)
 summary(m2)
 
 #R escolhe o primeiro nome em ordem alfabetica como referencia.
-# Qual a nota esperada do Jose se ele estudou 5 horas?
+# Qual a nota esperada ddo Jose se ele estudou 5 horas?
 
 (2.57925 - 0.98868)+(5*0.68679)
 
@@ -129,3 +256,57 @@ plot(efeitosfixos)
 # O que significa o "twoway" nos modelos?
 #estimar o modelo com dummies individuais e de tempo (em OLS)
 
+#######
+# Exemplo MP da liberdade
+# http://www.economia.gov.br/central-de-conteudos/publicacoes/notas-informativas/2019/ni_mp_liberdade_economica.pdf
+#CPIA business regulatory environment rating (1=low to 6=high)
+#https://data.worldbank.org/indicator/IQ.CPA.BREG.XQ
+
+library(WDI)
+
+pibpc <- data.frame(
+  WDI(indicator = "NY.GDP.PCAP.PP.KD",
+      start = 2014,
+      end = 2018,
+      extra = FALSE))
+
+
+regulatory <- data.frame(
+  WDI(indicator = "IQ.CPA.BREG.XQ",
+      start = 2014,
+      end = 2018,
+      extra = FALSE))
+
+
+#tirar as medidas de grupos
+
+pibpc2 <- pibpc %>% slice(236:1320)
+regulatory2 <- regulatory %>% slice(236:1320)
+
+pibpc2$regu <- regulatory2$IQ.CPA.BREG.XQ
+
+library(plm)
+
+m_fixo <- plm(log(NY.GDP.PCAP.PP.KD) ~ regu, data=pibpc2, 
+              index = c("iso2c"), model="within")
+summary(m_fixo)
+
+#dados Heritage https://gitlab.com/frankhecker/seven-answers/tree/c0aa903df1aea0feb07dcacf61f522f9272d2521/social-democracy
+
+freedom <- social_democracy_ief_scores_1995_2018 %>% filter(index_year>2013)
+
+freedom <- freedom %>% 
+        rename(country = name, year = index_year)
+
+freedom2 <- merge(freedom, pibpc2, by=c("country", "year"))
+
+
+m_fixo <- plm(log(NY.GDP.PCAP.PP.KD) ~ overall_score, freedom2, 
+              index = c("country"), model="within")
+summary(m_fixo)
+
+#que calculo o governo esta fazendo?
+
+#Chile 77.10, Brasil 54.70 
+(77.1-54.7)*0.005
+#ou seja, 11.2% ao longo do tempo.
